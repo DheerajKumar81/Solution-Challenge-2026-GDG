@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Food — Food Loop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">🔄</span>
+                <span class="logo-text">Food<span class="logo-highlight">Loop</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="donate.html">Donate Food</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+            <a href="request.html" class="nav-cta active-page">Request</a>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="page-main">
+        <div class="container">
+            <div class="page-header">
+                <p class="section-tag">Available Right Now</p>
+                <h1 class="section-title">Request <span class="gradient-text">Food</span></h1>
+                <p class="page-desc">Browse available surplus food near you and accept what your organisation needs.</p>
+            </div>
+
+            <div class="food-grid" id="requestFoodGrid"></div>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <div class="empty-icon">📭</div>
+                <h3>No food available right now</h3>
+                <p>Check back later or ask donors in your area to list surplus food.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-logo">🔄 Food<span class="logo-highlight">Loop</span></p>
+            <p class="footer-copy">&copy; 2026 FoodLoop. Built with purpose, powered by community.</p>
+        </div>
+    </footer>
+
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function loadAvailable() {
+            const grid = document.getElementById('requestFoodGrid');
+            const empty = document.getElementById('emptyState');
+
+            initDB();
+            const foods = getFoodsByStatus('Available');
+
+            if (foods.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+
+            grid.innerHTML = foods.map(f => `
+        <div class="food-card" id="card-${f.id}">
+          <div class="food-card-header">
+            <span class="food-type-icon">🍱</span>
+            <span class="badge badge-available">Available</span>
+          </div>
+          <h3 class="food-card-title">${escapeHtml(f.foodType)}</h3>
+          <div class="food-card-details">
+            <div class="food-detail"><span class="detail-icon">📦</span> ${escapeHtml(f.quantity)}</div>
+            <div class="food-detail"><span class="detail-icon">📍</span> ${escapeHtml(f.location)}</div>
+            <div class="food-detail"><span class="detail-icon">🕐</span> ${escapeHtml(f.time)}</div>
+          </div>
+          <button class="btn btn-primary btn-full btn-accept" onclick="acceptFood(${f.id})">
+            Accept this food
+          </button>
+        </div>
+      `).join('');
+        }
+
+        function acceptFood(id) {
+            const card = document.getElementById(`card-${id}`);
+            const btn = card.querySelector('.btn-accept');
+            btn.disabled = true;
+            btn.textContent = 'Accepting...';
+
+            try {
+                updateFoodStatus(id, 'Accepted');
+                showToast('✅ Food accepted! The donor will be notified.', 'success');
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => loadAvailable(), 500);
+            } catch (err) {
+                showToast('❌ Could not accept. Please try again.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Accept this food';
+            }
+        }
+
+        loadAvailable();
+    </script>
+</body>
+
+</html>

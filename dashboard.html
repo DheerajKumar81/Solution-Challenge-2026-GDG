@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — Food Loop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">🔄</span>
+                <span class="logo-text">Food<span class="logo-highlight">Loop</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="donate.html">Donate Food</a></li>
+                <li><a href="request.html">Request Food</a></li>
+            </ul>
+            <a href="dashboard.html" class="nav-cta active-page">Dashboard</a>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="page-main">
+        <div class="container">
+            <div class="page-header">
+                <p class="section-tag">Overview</p>
+                <h1 class="section-title">Food <span class="gradient-text">Dashboard</span></h1>
+                <p class="page-desc">Track all food donations and their current status in real time.</p>
+            </div>
+
+            <!-- FILTER TABS -->
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="Available">Available</button>
+                <button class="filter-tab" data-filter="Accepted">Accepted</button>
+                <button class="filter-tab" data-filter="Delivered">Delivered</button>
+            </div>
+
+            <!-- DASHBOARD GRID -->
+            <div class="food-grid" id="dashboardGrid"></div>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <div class="empty-icon">📋</div>
+                <h3>No entries found</h3>
+                <p>Be the first to <a href="donate.html" style="color:var(--accent);">donate food</a>!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-logo">🔄 Food<span class="logo-highlight">Loop</span></p>
+            <p class="footer-copy">&copy; 2026 FoodLoop. Built with purpose, powered by community.</p>
+        </div>
+    </footer>
+
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let currentFilter = 'all';
+
+        document.getElementById('filterTabs').addEventListener('click', (e) => {
+            if (!e.target.classList.contains('filter-tab')) return;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            currentFilter = e.target.dataset.filter;
+            loadDashboard();
+        });
+
+        function loadDashboard() {
+            const grid = document.getElementById('dashboardGrid');
+            const empty = document.getElementById('emptyState');
+
+            initDB();
+            const foods = currentFilter === 'all' ? getAllFoods() : getFoodsByStatus(currentFilter);
+
+            if (foods.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+
+            grid.innerHTML = foods.map(f => {
+                const badgeClass = f.status === 'Available' ? 'badge-available'
+                    : f.status === 'Accepted' ? 'badge-accepted'
+                        : 'badge-delivered';
+
+                const statusIcon = f.status === 'Available' ? '🟢'
+                    : f.status === 'Accepted' ? '🟠'
+                        : '✅';
+
+                let actionBtn = '';
+                if (f.status === 'Accepted') {
+                    actionBtn = `<button class="btn btn-sm btn-deliver" onclick="markDelivered(${f.id})">🚚 Mark Delivered</button>`;
+                }
+
+                return `
+          <div class="food-card" id="dash-${f.id}">
+            <div class="food-card-header">
+              <span class="food-type-icon">🍱</span>
+              <span class="badge ${badgeClass}">${statusIcon} ${f.status}</span>
+            </div>
+            <h3 class="food-card-title">${escapeHtml(f.foodType)}</h3>
+            <div class="food-card-details">
+              <div class="food-detail"><span class="detail-icon">📦</span> ${escapeHtml(f.quantity)}</div>
+              <div class="food-detail"><span class="detail-icon">📍</span> ${escapeHtml(f.location)}</div>
+              <div class="food-detail"><span class="detail-icon">🕐</span> ${escapeHtml(f.time)}</div>
+              <div class="food-detail"><span class="detail-icon">📅</span> ${new Date(f.createdAt).toLocaleDateString()}</div>
+            </div>
+            ${actionBtn}
+          </div>
+        `;
+            }).join('');
+        }
+
+        function markDelivered(id) {
+            try {
+                updateFoodStatus(id, 'Delivered');
+                showToast('✅ Marked as delivered!', 'success');
+                loadDashboard();
+            } catch (err) {
+                showToast('❌ Could not update. Try again.', 'error');
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+
+</html>

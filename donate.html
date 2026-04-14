@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donate Food — Food Loop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">🔄</span>
+                <span class="logo-text">Food<span class="logo-highlight">Loop</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="request.html">Request Food</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+            <a href="donate.html" class="nav-cta active-page">Donate</a>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="page-main">
+        <div class="container">
+            <div class="page-header">
+                <p class="section-tag">Make a Difference</p>
+                <h1 class="section-title">Donate <span class="gradient-text">Food</span></h1>
+                <p class="page-desc">Fill in the details below and your surplus food will be visible to nearby NGOs,
+                    orphanages, and shelters within seconds.</p>
+            </div>
+
+            <form class="donate-form" id="donateForm">
+                <div class="form-group">
+                    <label for="foodType">Food Type</label>
+                    <input type="text" id="foodType" name="foodType" placeholder="e.g. Biryani, Sandwiches, Dal & Rice"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="text" id="quantity" name="quantity" placeholder="e.g. 25 kg, 50 meals" required />
+                </div>
+                <div class="form-group">
+                    <label for="location">Pickup Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Connaught Place, Delhi"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label for="time">Pickup Time</label>
+                    <input type="text" id="time" name="time" placeholder="e.g. 6:00 PM" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="submitDonation">
+                    <span class="btn-icon">🤲</span> Submit Donation
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-logo">🔄 Food<span class="logo-highlight">Loop</span></p>
+            <p class="footer-copy">&copy; 2026 FoodLoop. Built with purpose, powered by community.</p>
+        </div>
+    </footer>
+
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('donateForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitDonation');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btn-icon">⏳</span> Submitting...';
+
+            const food = {
+                foodType: document.getElementById('foodType').value.trim(),
+                quantity: document.getElementById('quantity').value.trim(),
+                location: document.getElementById('location').value.trim(),
+                time: document.getElementById('time').value.trim(),
+            };
+
+            try {
+                addFood(food);
+                showToast('🎉 Food donation submitted successfully!', 'success');
+                document.getElementById('donateForm').reset();
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+            } catch (err) {
+                showToast('❌ Something went wrong. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="btn-icon">🤲</span> Submit Donation';
+            }
+        });
+    </script>
+</body>
+
+</html>
