@@ -1,0 +1,14 @@
+{
+  "name": "food-loop",
+  "version": "1.0.0",
+  "description": "Food Loop — Connecting surplus food to those who need it most",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "better-sqlite3": "^11.6.0"
+  }
+}
