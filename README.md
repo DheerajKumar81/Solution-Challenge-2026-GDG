@@ -8,12 +8,12 @@
 The system enables efficient redistribution of surplus food in a timely and organized manner.</p><br>
 
 <h1>🚀 Features</h1><br>
-🔄 Food Donation System – Donate surplus food 
-📍 Location-Based Matching – Connect donors with nearby NGOs
-⏱️ Real-Time Notifications – Instant updates for food availability
-👥 User Roles – Donors, NGOs, and Volunteers
-📦 Request & Claim System – NGOs can request available food
-📊 Dashboard Analytics – Track donations and impact
+<ul>🔄 Food Donation System – Donate surplus food </ul>
+<ul>📍 Location-Based Matching – Connect donors with nearby NGOs</ul>
+<ul>⏱️ Real-Time Notifications – Instant updates for food availability</ul>
+<ul>👥 User Roles – Donors, NGOs, and Volunteers</ul>
+<ul>📦 Request & Claim System – NGOs can request available food</ul>
+<ul>📊 Dashboard Analytics – Track donations and impact</ul>
 
 <h1>🛠️ Tech Stack</h1><br>
 <ul>Frontend: React.js / HTML / CSS / JavaScript</ul>
