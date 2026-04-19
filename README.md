@@ -1,6 +1,6 @@
 <h1>🍽️ FoodLoop – Smart Food Waste Reduction Platform</h1><br>
 
-LIVE WEBPAGE : <a href = "file:///C:/Users/Desktop/AG_project01/food-loop/public/index.html" target="_blank">FoodLoop</a>
+LIVE WEBPAGE : file:///C:/Users/Desktop/AG_project01/food-loop/public/index.html
 
 <h1>🧠 Problem Statement</h1><br>
 <p>Every year, tons of food are wasted while many people go hungry. FoodLoop addresses this issue by creating a bridge between excess and need, ensuring food reaches the right people before it gets wasted.</p><br>
