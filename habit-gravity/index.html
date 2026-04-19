@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Gravity - Gamified Productivity Engine</title>
+    <meta name="description" content="A gamified productivity dashboard using physics and gravity simulations.">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="space-background"></div>
+    <div id="stars-container"></div>
+
+    <div id="ui-container">
+        <h1>Habit Gravity</h1>
+        <div class="score-board">
+            <span>Consistency Score:</span>
+            <span id="score-value">0</span>
+        </div>
+        <div class="booster-container">
+            <div class="booster-bar" id="booster-fill"></div>
+        </div>
+        <p class="instructions">Drag to interact. Click a habit to toggle complete/missed.</p>
+    </div>
+
+    <!-- Matter.js Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- DOM Elements overlay for Habits -->
+    <div id="habits-overlay"></div>
+
+    <!-- Load Matter.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
